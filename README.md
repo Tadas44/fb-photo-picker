@@ -2,7 +2,7 @@
 [![](https://jitpack.io/v/Tadas44/fb-photo-picker.svg)](https://jitpack.io/#Tadas44/fb-photo-picker)
 
 # fb-photo-picker
-Facebook photo picker. Library written from scratch using RxJava to easily login to facebook, select albums and images
+Facebook photo picker. This library contains RxFacebookPhoto picker with RxFacebookLogin. Purpose for this library is easy facebook login, facebook photo selection, albums browsing.
 
 ## Version v0.9.x
 - Login to facebook
@@ -15,7 +15,7 @@ Import dependencies
 
 ```groovy
 	dependencies {
-	        compile 'com.github.Tadas44:fb-photo-picker:0.9.3'
+	        compile 'com.github.Tadas44:fb-photo-picker:x.x.x'
 	}
 ```
 
