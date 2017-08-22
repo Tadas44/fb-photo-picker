@@ -1,0 +1,77 @@
+apply from: "versions.gradle"
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+android {
+    compileSdkVersion BUILD_SDK_VERSION
+    buildToolsVersion BUILD_TOOLS_VERSION
+
+    defaultConfig {
+        minSdkVersion MIN_SDK_VERSION
+        targetSdkVersion BUILD_SDK_VERSION
+        versionCode = VERSION_MAJOR * 10000 + VERSION_MINOR * 100 + VERSION_BUILD
+        versionName = "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_BUILD}"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    defaultConfig {
+        defaultPublishConfig 'release'
+        publishNonDefault false
+    }
+}
+
+if (android.productFlavors.size() > 0) {
+    android.libraryVariants.all { variant ->
+        if (android.publishNonDefault && variant.name == android.defaultPublishConfig) {
+            def bundleTask = tasks["bundle${name.capitalize()}"]
+            artifacts {
+                archives(bundleTask.archivePath) {
+                    classifier null
+                    builtBy bundleTask
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
+    compile "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
+    compile "com.squareup.retrofit2:adapter-rxjava:$RETROFIT_VERSION"
+
+    compile "io.reactivex:rxjava:$RX_JAVA_VERSION"
+    compile "io.reactivex:rxandroid:$RX_JAVA_VERSION"
+
+    compile "com.squareup.okhttp3:logging-interceptor:$OKHTTP3_VERSION"
+    compile "com.squareup.okhttp3:okhttp:$OKHTTP3_VERSION"
+
+    compile "com.facebook.android:facebook-android-sdk:$FACEBOOK_VERSION"
+    compile "com.android.support:recyclerview-v7:$ANDROID_SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:design:$ANDROID_SUPPORT_LIBRARY_VERSION"
+    compile "com.github.bumptech.glide:glide:$GLIDE_VERSION"
+
+    testCompile "junit:junit:$JUNIT_VERSION"
+}

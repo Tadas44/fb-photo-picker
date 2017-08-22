@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="FbPhotoPickerTheme" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowNoTitle">true</item>
+
+        <item name="colorPrimary">@color/fb_blue</item>
+        <item name="android:colorPrimary">@color/fb_blue</item>
+        <item name="colorPrimaryDark">@color/fb_blue_dark</item>
+        <item name="android:colorPrimaryDark">@color/fb_blue_dark</item>
+        <item name="colorAccent">@color/fb_blue</item>
+        <item name="android:colorAccent">@color/fb_blue</item>
+    </style>
+
+    <style name="FbPhotoPickerTheme.AppBarOverlay"
+           parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="FbPhotoPickerTheme.PopupOverlay"
+           parent="ThemeOverlay.AppCompat.Light"/>
+
+
+    <color name="fb_blue">#415dae</color>
+    <color name="fb_blue_dark">#2f477a</color>
+    <color name="transparent_blue">#33415dae</color>
+
+</resources>
