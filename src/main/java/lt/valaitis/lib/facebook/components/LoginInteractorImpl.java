@@ -7,6 +7,9 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
@@ -80,6 +83,53 @@ class LoginInteractorImpl implements LoginInteractor {
                 });
     }
 
+    @Override
+    public Single<AccessToken> refreshAccessToken() {
+        return Single.create(new Single.OnSubscribe<AccessToken>() {
+            @Override
+            public void call(final SingleSubscriber<? super AccessToken> singleSubscriber) {
+                if (!singleSubscriber.isUnsubscribed()) {
+                    if (AccessToken.getCurrentAccessToken() == null) singleSubscriber.onError(new FbLoginRequiredError());
+
+                    AccessToken.refreshCurrentAccessTokenAsync(new AccessToken.AccessTokenRefreshCallback() {
+                        @Override
+                        public void OnTokenRefreshed(AccessToken accessToken) {
+                            singleSubscriber.onSuccess(accessToken);
+                        }
+
+                        @Override
+                        public void OnTokenRefreshFailed(FacebookException exception) {
+                            singleSubscriber.onError(exception);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> logout() {
+        return Single.create(new Single.OnSubscribe<Boolean>() {
+            @Override
+            public void call(final SingleSubscriber<? super Boolean> singleSubscriber) {
+                if (!singleSubscriber.isUnsubscribed()) {
+                    if (AccessToken.getCurrentAccessToken() == null) {
+                        singleSubscriber.onSuccess(false);
+                    } else {
+                        new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
+
+                            @Override
+                            public void onCompleted(GraphResponse graphResponse) {
+                                LoginManager.getInstance().logOut();
+                                singleSubscriber.onSuccess(true);
+                            }
+                        }).executeAsync();
+                    }
+                }
+            }
+        });
+    }
+
     @NonNull
     private Single<Void> createLoginSingle(final Collection<String> permissions) {
         return Single.create(new Single.OnSubscribe<Void>() {
@@ -130,7 +180,7 @@ class LoginInteractorImpl implements LoginInteractor {
         private final PublishSubject<LoginResult> subject = PublishSubject.create();
 
         @Override
-        public void onSuccess(LoginResult loginResult) {
+        public void onSuccess(final LoginResult loginResult) {
             subject.onNext(loginResult);
         }
 

@@ -1,5 +1,6 @@
 package lt.valaitis.lib.facebook.components;
 
+import com.facebook.AccessToken;
 import com.facebook.login.LoginResult;
 
 import java.util.Collection;
@@ -18,5 +19,9 @@ public interface LoginInteractor {
     Single<Boolean> isPermissionGrantedQuiet(String permission);
 
     Single<LoginResult> login(Collection<String> permissions);
+
+    Single<AccessToken> refreshAccessToken();
+
+    Single<Boolean> logout();
 
 }

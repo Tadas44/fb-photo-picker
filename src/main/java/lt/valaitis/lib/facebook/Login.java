@@ -1,5 +1,6 @@
 package lt.valaitis.lib.facebook;
 
+import com.facebook.AccessToken;
 import com.facebook.login.LoginResult;
 
 import java.util.Arrays;
@@ -30,6 +31,14 @@ class Login {
         return loginInteractor.login(builder.permissions);
     }
 
+    Single<Boolean> logout() {
+        return loginInteractor.logout();
+    }
+
+    Single<AccessToken> refreshAccessToken() {
+        return loginInteractor.refreshAccessToken();
+    }
+
     public static class Builder {
         private List<String> permissions = Arrays.asList(Permissions.PUBLIC_PROFILE);
         private final TargetUi targetUi;
@@ -45,6 +54,14 @@ class Login {
 
         public Single<LoginResult> login() {
             return new Login(new AppComponentImpl(targetUi), this).login();
+        }
+
+        public Single<Boolean> logout() {
+            return new Login(new AppComponentImpl(targetUi), this).logout();
+        }
+
+        public Single<AccessToken> refreshAccessToken() {
+            return new Login(new AppComponentImpl(targetUi), this).refreshAccessToken();
         }
 
     }
